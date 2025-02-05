@@ -45,7 +45,7 @@ OmniBot is an open-source omnidirectional robotics platform designed for:
 
 ### Prerequisites
 - Ubuntu 24.04 LTS (ARM64)
-- ROS2 Humble Hawksbill
+- ROS2 Jazzy 
 - STM32CubeIDE 1.15.0+
 - Python 3.10+
 
@@ -53,13 +53,16 @@ OmniBot is an open-source omnidirectional robotics platform designed for:
 
 Clone repository:
 ```bash
-git clone https://github.com/yourusername/omnibot-project.git
-cd omnibot-project
+git clone https://github.com/varunvaidhiya/Mecanum-Wheel-Robot
+
+
+cd Mecanum-Wheel_Robot
+
 ```
 
 Install ROS dependencies:
 ```bash
-sudo apt install ros-humble-robot-localization ros-humble-nav2-bringup
+sudo apt install ros-jazzy-robot-localization ros-jazzy-nav2-bringup
 ```
 
 Build workspace:
@@ -117,14 +120,11 @@ We welcome contributions! Please see our [Contribution Guidelines](CONTRIBUTING.
    ```
 5. Open a Pull Request
 
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
 **Project Maintainer**: [Varun Vaidhiya] - your.email@example.com  
-**Project Link**: [https://github.com/yourusername/omnibot-project](https://github.com/yourusername/omnibot-project)
+**Project Link**: [https://github.com/varunvaidhiya/Mecanum-Wheel-Robot](https://github.com/varunvaidhiya/Mecanum-Wheel-Robot)
 
 ## 🙏 Acknowledgments
 

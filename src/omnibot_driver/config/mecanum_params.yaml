@@ -1,0 +1,22 @@
+/**:
+  ros__parameters:
+    # Robot physical parameters
+    wheel_radius: 0.05  # 5 cm radius
+    wheel_separation_width: 0.3  # 30 cm between left and right wheels
+    wheel_separation_length: 0.3  # 30 cm between front and back wheels
+    
+    # Serial communication parameters
+    serial_port: /dev/ttyACM0
+    baud_rate: 115200
+    read_timeout: 0.1  # seconds
+    
+    # Controller parameters
+    max_linear_velocity: 1.0  # m/s
+    max_angular_velocity: 2.0  # rad/s
+    
+    # PID parameters for velocity control
+    pid:
+      kp: 0.5
+      ki: 0.1
+      kd: 0.01
+      max_integral: 1.0

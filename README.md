@@ -123,7 +123,7 @@ We welcome contributions! Please see our [Contribution Guidelines](CONTRIBUTING.
 
 ## 📧 Contact
 
-**Project Maintainer**: [Varun Vaidhiya] - your.email@example.com  
+**Project Maintainer**: [Varun Vaidhiya] - varun.vaidhiya@gmail.com
 **Project Link**: [https://github.com/varunvaidhiya/Mecanum-Wheel-Robot](https://github.com/varunvaidhiya/Mecanum-Wheel-Robot)
 
 ## 🙏 Acknowledgments

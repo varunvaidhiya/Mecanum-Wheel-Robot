@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="omnibot">
+
+    <!-- Constants -->
+    <xacro:property name="PI" value="3.1415926535897931"/>
+    <xacro:property name="wheel_radius" value="0.05"/>
+    <xacro:property name="wheel_width" value="0.02"/>
+    <xacro:property name="wheel_separation_x" value="0.3"/>
+    <xacro:property name="wheel_separation_y" value="0.3"/>
+    <xacro:property name="chassis_length" value="0.4"/>
+    <xacro:property name="chassis_width" value="0.4"/>
+    <xacro:property name="chassis_height" value="0.1"/>
+
+    <!-- Dummy base link -->
+    <link name="base_footprint"/>
+
+    <!-- Base Link -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="5.0"/>
+            <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+        </inertial>
+    </link>
+
+    <!-- Joint between dummy base and base_link -->
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Wheel Macros -->
+    <xacro:macro name="wheel" params="name x y z roll pitch yaw">
+        <link name="${name}_wheel">
+            <visual>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+                </geometry>
+                <material name="black">
+                    <color rgba="0 0 0 1"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.5"/>
+                <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_joint" type="continuous">
+            <parent link="base_link"/>
+            <child link="${name}_wheel"/>
+            <origin xyz="${x} ${y} ${z}" rpy="${roll} ${pitch} ${yaw}"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Create Wheels -->
+    <xacro:wheel name="front_left" x="${wheel_separation_x/2}" y="${wheel_separation_y/2}" z="0" roll="0" pitch="0" yaw="${PI/4}"/>
+    <xacro:wheel name="front_right" x="${wheel_separation_x/2}" y="-${wheel_separation_y/2}" z="0" roll="0" pitch="0" yaw="-${PI/4}"/>
+    <xacro:wheel name="rear_left" x="-${wheel_separation_x/2}" y="${wheel_separation_y/2}" z="0" roll="0" pitch="0" yaw="-${PI/4}"/>
+    <xacro:wheel name="rear_right" x="-${wheel_separation_x/2}" y="-${wheel_separation_y/2}" z="0" roll="0" pitch="0" yaw="${PI/4}"/>
+
+    <!-- Transmissions -->
+    <transmission name="front_left_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_left_joint"/>
+    </transmission>
+    <transmission name="front_right_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="front_right_joint"/>
+    </transmission>
+    <transmission name="rear_left_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="rear_left_joint"/>
+    </transmission>
+    <transmission name="rear_right_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="rear_right_joint"/>
+    </transmission>
+
+</robot> 

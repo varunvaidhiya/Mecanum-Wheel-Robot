@@ -13,10 +13,10 @@ MecanumController::MecanumController(const rclcpp::NodeOptions & options)
   y_pos_(0.0),
   theta_(0.0)
 {
-  // Declare and get parameters
-  this->declare_parameter("wheel_radius", 0.05);  // 5 cm radius
-  this->declare_parameter("wheel_separation_width", 0.3);  // 30 cm between left and right wheels
-  this->declare_parameter("wheel_separation_length", 0.3);  // 30 cm between front and back wheels
+  // Declare and get parameters with correct default values matching URDF
+  this->declare_parameter("wheel_radius", 0.04);  // 4 cm radius
+  this->declare_parameter("wheel_separation_width", 0.215);  // 21.5 cm between left and right wheels
+  this->declare_parameter("wheel_separation_length", 0.165);  // 16.5 cm between front and back wheels
   this->declare_parameter("serial_port", "/dev/ttyACM0");
   this->declare_parameter("baud_rate", 115200);
   
@@ -35,7 +35,7 @@ MecanumController::MecanumController(const rclcpp::NodeOptions & options)
   // Create transform broadcaster
   tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
   
-  // Create timer for periodic updates
+  // Create timer for periodic updates (100 Hz)
   update_timer_ = this->create_wall_timer(
     std::chrono::milliseconds(10), std::bind(&MecanumController::updateCallback, this));
     
@@ -93,17 +93,28 @@ void MecanumController::calculateWheelVelocities(
   double omega = twist.angular.z;
   
   // Calculate wheel velocities using mecanum kinematics equations
-  // For a mecanum wheel robot, the wheel velocities are calculated as follows:
-  // FL = Vx - Vy - (L+W)*omega
-  // FR = Vx + Vy + (L+W)*omega
-  // RL = Vx + Vy - (L+W)*omega
-  // RR = Vx - Vy + (L+W)*omega
-  // Where L is half the wheel separation length and W is half the wheel separation width
+  // For our mecanum wheel robot with 45-degree rollers:
+  // Front Left (FL): +45° roller orientation
+  // Front Right (FR): -45° roller orientation
+  // Rear Left (RL): -45° roller orientation
+  // Rear Right (RR): +45° roller orientation
+  //
+  // The wheel velocities are calculated as:
+  // FL = (Vx - Vy - (L+W)*omega) / R
+  // FR = (Vx + Vy + (L+W)*omega) / R
+  // RL = (Vx + Vy - (L+W)*omega) / R
+  // RR = (Vx - Vy + (L+W)*omega) / R
+  // Where:
+  // - L is half the wheel separation length (distance between front and back wheels)
+  // - W is half the wheel separation width (distance between left and right wheels)
+  // - R is the wheel radius
+  // - omega is the angular velocity around the Z axis
   
-  double L = wheel_separation_length_ / 2.0;
-  double W = wheel_separation_width_ / 2.0;
+  double L = wheel_separation_length_ / 2.0;  // 0.0825 m
+  double W = wheel_separation_width_ / 2.0;   // 0.1075 m
   double k = L + W;  // Distance from center to wheel (for rotation component)
   
+  // Calculate wheel velocities
   front_left = vx - vy - k * omega;
   front_right = vx + vy + k * omega;
   rear_left = vx + vy - k * omega;

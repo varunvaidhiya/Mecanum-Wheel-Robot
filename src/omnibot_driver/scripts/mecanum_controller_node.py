@@ -22,9 +22,9 @@ class MecanumControllerNode(Node):
         super().__init__('mecanum_controller_node')
         
         # Declare parameters
-        self.declare_parameter('wheel_radius', 0.05)  # 5 cm radius
-        self.declare_parameter('wheel_separation_width', 0.3)  # 30 cm between left and right wheels
-        self.declare_parameter('wheel_separation_length', 0.3)  # 30 cm between front and back wheels
+        self.declare_parameter('wheel_radius', 0.04)  # 4 cm radius
+        self.declare_parameter('wheel_separation_width', 0.215)  # 21.5 cm between left and right wheels
+        self.declare_parameter('wheel_separation_length', 0.165)  # 16.5 cm between front and back wheels
         self.declare_parameter('serial_port', '/dev/ttyACM0')
         self.declare_parameter('baud_rate', 115200)
         

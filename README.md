@@ -22,7 +22,7 @@ This project implements a mecanum wheel robot with ROS2, featuring:
 - Built-in motor drivers and encoders
 - Simplified communication protocol
 - USB connection for easy setup
-- Based on [Yahboom ROS Driver Board]([https://www.yahboom.net/study/ROS-Driver-Board](https://www.yahboom.net/study/ROS-Driver-Board))
+- Based on [Yahboom ROS Driver Board]([https://www.yahboom.net/study/ROS-Driver-Board])
 
 ## Project Structure
 

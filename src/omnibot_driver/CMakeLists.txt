@@ -10,53 +10,67 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# Find dependencies
+# find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rclpy REQUIRED)
-find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(sensor_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
-find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(tf_transformations REQUIRED)
 
 # Include directories
 include_directories(include)
 
-# Install Python modules
-ament_python_install_package(${PROJECT_NAME})
+# Create library
+add_library(${PROJECT_NAME}
+  src/mecanum_controller.cpp
+)
 
-# Install Python executables
+ament_target_dependencies(${PROJECT_NAME}
+  rclcpp
+  geometry_msgs
+  nav_msgs
+  tf2_ros
+  tf_transformations
+)
+
+# Install library
+install(TARGETS
+  ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+# Install Python scripts
 install(PROGRAMS
   scripts/mecanum_controller_node.py
   scripts/serial_bridge_node.py
-  DESTINATION lib/${PROJECT_NAME}
-)
-
-# Add C++ executables
-add_executable(base_controller src/base_controller.cpp)
-ament_target_dependencies(base_controller
-  rclcpp
-  std_msgs
-  geometry_msgs
-  nav_msgs
-  tf2
-  tf2_ros
-)
-
-# Install C++ executables
-install(TARGETS
-  base_controller
+  scripts/yahboom_controller_node.py
+  scripts/yahboom_test_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
 # Install launch files
 install(DIRECTORY
   launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# Install config files
+install(DIRECTORY
   config
-  DESTINATION share/${PROJECT_NAME}/
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# Install headers
+install(DIRECTORY include/
+  DESTINATION include
+)
+
+# Install package.xml
+install(FILES package.xml
+  DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

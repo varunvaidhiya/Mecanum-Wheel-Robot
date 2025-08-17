@@ -1,134 +1,161 @@
-# 🤖 OmniBot - Autonomous Mecanum Wheel Robot with ROS Integration
+# OmniBot Mecanum Wheel Robot
 
-[![ROS2 Jazzy](https://img.shields.io/badge/ROS2-Jazzy-brightgreen)](https://docs.ros.org/en/jazzy/)
-[![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu-24.04_LTS-orange)](https://releases.ubuntu.com/24.04/)
-[![STM32](https://img.shields.io/badge/STM32-F407VG_Discovery-blue)](https://www.st.com/en/evaluation-tools/stm32f4discovery.html)
+A ROS2-based mecanum wheel robot project with support for both STM32 and Yahboom ROS Robot Expansion Board for low-level motor control.
 
-**Next-Gen Mobile Robotics Platform** | *Mecanum Mobility* | *ROS2 Powered* | *AI-Ready Architecture*
+## Overview
 
-![Mecanum Robot Concept](https://via.placeholder.com/800x400.png?text=Mecanum+Robot+Demo+GIF+-+Add+Your+Project+Visuals+Here)
+This project implements a mecanum wheel robot with ROS2, featuring:
+- Mecanum wheel kinematics for omnidirectional movement
+- Support for STM32 microcontroller (original implementation)
+- **NEW**: Support for Yahboom ROS Robot Expansion Board
+- URDF models for visualization
+- Launch files for easy deployment
 
-## 🚀 Project Vision
-OmniBot is an open-source omnidirectional robotics platform designed for:
-- **Advanced Research** in autonomous navigation and human-robot interaction
-- **Seamless Integration** of foundation models for perception and planning
-- **Educational Platform** for ROS2 and embedded systems development
-- **Modular Foundation** for industrial-grade mobile robotics applications
+## Hardware Support
 
-## 🔑 Key Features
-- **Holonomic Mobility**: 4WD mecanum wheels for 360° movement
-- **Hybrid Control System**:
-  - Raspberry Pi 5 (Ubuntu 24.04) for high-level computation
-  - STM32F407VG Discovery board for real-time motor control
-- **ROS2 Framework**:
-  - Custom motor control package (`omnibot_driver`)
-  - Sensor integration ready (LIDAR, RGB-D, IMU)
-- **Future-Ready AI**:
-  - Planned integration of vision transformers for perception
-  - Natural language understanding for voice commands
-  - Reinforcement learning for adaptive path planning
+### STM32 Microcontroller (Original)
+- Direct motor control via PWM signals
+- Encoder feedback for odometry
+- Serial communication protocol
 
-## 🛠️ Hardware Architecture
+### Yahboom ROS Robot Expansion Board (New)
+- Built-in motor drivers and encoders
+- Simplified communication protocol
+- USB connection for easy setup
+- Based on [Yahboom ROS Driver Board](https://www.yahboom.net/study/ROS-Driver-Board)
+
+## Project Structure
+
 ```
-├── Compute Layer (RPi 5)
-│   ├── Ubuntu 24.04 LTS
-│   └── ROS2 Humble
-├── Control Layer (STM32F407VG)
-│   ├── L298N Motor Drivers (x2)
-│   └── PWM-Controlled Mecanum Wheels
-└── Perception Layer (Future)
-    ├── Stereo Camera Setup
-    └── 360° LIDAR Array
+Mecanum-Wheel-Robot/
+├── src/
+│   ├── omnibot_driver/          # Motor control and hardware interface
+│   │   ├── scripts/
+│   │   │   ├── mecanum_controller_node.py    # STM32 controller
+│   │   │   ├── serial_bridge_node.py         # STM32 serial bridge
+│   │   │   ├── yahboom_controller_node.py    # NEW: Yahboom controller
+│   │   │   └── yahboom_test_node.py          # NEW: Yahboom test node
+│   │   ├── launch/
+│   │   │   ├── base_control.launch.py        # STM32 launch
+│   │   │   ├── yahboom_base_control.launch.py # NEW: Yahboom launch
+│   │   │   └── yahboom_test.launch.py        # NEW: Yahboom test launch
+│   │   └── config/
+│   │       ├── mecanum_params.yaml           # STM32 parameters
+│   │       └── yahboom_params.yaml           # NEW: Yahboom parameters
+│   ├── omnibot_description/     # URDF models and visualization
+│   ├── omnibot_bringup/         # High-level launch files
+│   └── omnibot_firmware/        # STM32 firmware (not needed for Yahboom)
 ```
 
-## ⚡ Getting Started
+## Installation
 
 ### Prerequisites
-- Ubuntu 24.04 LTS (ARM64)
-- ROS2 Jazzy 
-- STM32CubeIDE 1.15.0+
-- Python 3.10+
+- ROS2 (Humble or later)
+- Python 3.8+
+- Serial communication library: `pip install pyserial`
 
-### Installation
-
-Clone repository:
+### Building the Project
 ```bash
-git clone https://github.com/varunvaidhiya/Mecanum-Wheel-Robot
+# Clone the repository
+git clone <repository-url>
+cd Mecanum-Wheel-Robot
 
+# Build the workspace
+colcon build
 
-cd Mecanum-Wheel_Robot
-
-```
-
-Install ROS dependencies:
-```bash
-sudo apt install ros-jazzy-robot-localization ros-jazzy-nav2-bringup
-```
-
-Build workspace:
-```bash
-colcon build --symlink-install
+# Source the workspace
 source install/setup.bash
 ```
 
-Flash STM32 controller:
-```bash
-openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program build/omnibot_firmware.elf verify reset exit"
-```
+## Usage
 
-## 🧠 ROS2 Integration
+### Using Yahboom Board (Recommended)
 
-Launch base control node:
-```bash
-ros2 launch omnibot_driver base_control.launch.py
-```
+1. **Connect the Yahboom board** via USB to your computer
+2. **Test the connection**:
+   ```bash
+   ros2 launch omnibot_driver yahboom_test.launch.py
+   ```
 
-Example velocity command:
-```bash
-ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.5, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.5}}"
-```
+3. **Run the robot controller**:
+   ```bash
+   ros2 launch omnibot_driver yahboom_base_control.launch.py
+   ```
 
-## 🌟 Future Roadmap
+4. **Control the robot**:
+   ```bash
+   # In another terminal, publish velocity commands
+   ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.5, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"
+   ```
 
-1. **Perception System** (Q2 2025)
-   - Integration of Vision Transformer (ViT) models
-   - 3D object detection pipeline
+### Using STM32 (Legacy)
 
-2. **Cognitive Layer** (Q3 2025)
-   - Natural Language Processing (NLP) interface
-   - LLM-based task understanding
+1. **Flash the STM32 firmware** (see `omnibot_firmware/` directory)
+2. **Connect the STM32** via USB
+3. **Run the robot controller**:
+   ```bash
+   ros2 launch omnibot_driver base_control.launch.py
+   ```
 
-3. **Autonomy Suite** (Q4 2025)
-   - Neural Motion Planning (NMP)
-   - Multi-modal sensor fusion
+## Configuration
 
-## 🤝 Contributing
+### Yahboom Board Parameters
 
-We welcome contributions! Please see our [Contribution Guidelines](CONTRIBUTING.md) and:
+Edit `src/omnibot_driver/config/yahboom_params.yaml` to adjust:
+- Robot physical dimensions
+- Serial port settings
+- Motor control parameters
+- Encoder settings
+
+### STM32 Parameters
+
+Edit `src/omnibot_driver/config/mecanum_params.yaml` for STM32 configuration.
+
+## Key Differences: STM32 vs Yahboom
+
+| Feature | STM32 | Yahboom Board |
+|---------|-------|---------------|
+| **Connection** | USB/Serial | USB |
+| **Motor Control** | Direct PWM | Built-in drivers |
+| **Encoders** | External | Built-in |
+| **Protocol** | Custom serial | Simplified commands |
+| **Setup** | Requires firmware | Plug-and-play |
+| **Commands** | `<FL,FR,RL,RR>` | `MOTOR,FL,FR,RL,RR` |
+
+## Troubleshooting
+
+### Yahboom Board Issues
+
+1. **Port not found**: Check if the board is connected and recognized
+   ```bash
+   ls /dev/ttyUSB*
+   ```
+
+2. **Permission denied**: Add user to dialout group
+   ```bash
+   sudo usermod -a -G dialout $USER
+   ```
+
+3. **Wrong baud rate**: Verify the board's communication settings
+
+### STM32 Issues
+
+1. **Firmware not loaded**: Flash the STM32 with the provided firmware
+2. **Serial communication**: Check port and baud rate settings
+
+## Contributing
+
 1. Fork the repository
-2. Create your feature branch:
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m 'Add some amazing feature'
-   ```
-4. Push to the branch:
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Test with both STM32 and Yahboom boards
+5. Submit a pull request
 
+## License
 
-## 📧 Contact
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-**Project Maintainer**: [Varun Vaidhiya] - varun.vaidhiya@gmail.com
-**Project Link**: [https://github.com/varunvaidhiya/Mecanum-Wheel-Robot](https://github.com/varunvaidhiya/Mecanum-Wheel-Robot)
+## Acknowledgments
 
-## 🙏 Acknowledgments
-
-- ROS2 Development Team
-- STMicroelectronics for STM32 tools
-- NVIDIA for AI framework inspiration
-- OpenCV community for computer vision support.
+- [Yahboom](https://www.yahboom.net/) for the ROS Robot Expansion Board
+- ROS2 community for the excellent robotics framework

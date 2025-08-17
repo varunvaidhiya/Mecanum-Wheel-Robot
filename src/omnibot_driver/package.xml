@@ -3,8 +3,8 @@
 <package format="3">
   <name>omnibot_driver</name>
   <version>0.1.0</version>
-  <description>Motor control and hardware interface for OmniBot mecanum wheel robot</description>
-  <maintainer email="your.email@example.com">Varun Vaidhiya</maintainer>
+  <description>Driver package for OmniBot mecanum wheel robot with Yahboom board support</description>
+  <maintainer email="your_email@example.com">Your Name</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -12,13 +12,12 @@
 
   <depend>rclcpp</depend>
   <depend>rclpy</depend>
-  <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
-  <depend>sensor_msgs</depend>
   <depend>nav_msgs</depend>
-  <depend>tf2</depend>
+  <depend>std_msgs</depend>
   <depend>tf2_ros</depend>
-  <depend>serial</depend>
+  <depend>tf_transformations</depend>
+  <depend>sensor_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

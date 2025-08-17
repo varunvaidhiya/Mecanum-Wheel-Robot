@@ -1,0 +1,30 @@
+/**:  # Apply to all nodes in the package
+  ros__parameters:
+    # Robot physical parameters
+    wheel_radius: 0.04  # 4 cm radius
+    wheel_separation_width: 0.215  # 21.5 cm between left and right wheels
+    wheel_separation_length: 0.165  # 16.5 cm between front and back wheels
+    
+    # Yahboom board communication parameters
+    serial_port: /dev/ttyUSB0  # Yahboom typically uses USB
+    baud_rate: 115200
+    read_timeout: 0.1  # seconds
+    
+    # Controller parameters
+    max_linear_velocity: 1.0  # m/s
+    max_angular_velocity: 2.0  # rad/s
+    
+    # Yahboom board specific parameters
+    max_pwm_percentage: 100  # Maximum PWM percentage (-100 to 100)
+    max_rad_s: 10.0  # Maximum expected rad/s for PWM conversion
+    
+    # PID parameters for velocity control (if needed)
+    pid:
+      kp: 0.5
+      ki: 0.1
+      kd: 0.01
+      max_integral: 1.0
+    
+    # Encoder parameters
+    encoder_ticks_per_revolution: 1440  # Typical for Yahboom encoders
+    encoder_resolution: 0.25  # degrees per tick

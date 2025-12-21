@@ -11,6 +11,31 @@ This project implements a mecanum wheel robot with ROS2, featuring:
 - URDF models for visualization
 - Launch files for easy deployment
 
+┌───────────────────────────────┐
+│ Android App (UI + Voice)      │
+└──────────────┬────────────────┘
+               │ (ROSBridge / gRPC / WebSocket)
+┌──────────────▼────────────────┐
+│ Robot Runtime (ROS 2)         │
+│  - Control                    │
+│  - Sensors                    │
+│  - Logging hooks              │
+└──────────────┬────────────────┘
+               │ (Recorded data)
+┌──────────────▼────────────────┐
+│ Data Engine                   │
+│  - Dataset format             │
+│  - Storage / labeling         │
+└──────────────┬────────────────┘
+               │ (offline/online)
+┌──────────────▼────────────────┐
+│ VLA Inference Engine          │
+│  - Training                   │
+│  - Fine-tuning                │
+│  - Runtime inference          │
+└───────────────────────────────┘
+
+
 ## Hardware Support
 
 ### STM32 Microcontroller (Original)

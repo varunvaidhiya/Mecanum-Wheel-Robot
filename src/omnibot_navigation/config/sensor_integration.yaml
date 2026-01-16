@@ -1,0 +1,40 @@
+# Sensor Integration Configuration for OmniBot Autonomous Navigation
+# This file provides configuration templates for common sensors
+
+# Depth Camera Configuration (Kinect V2)
+kinect:
+  ros__parameters:
+    frame_id: "kinect_link"
+    topic: "/scan" # From depthimage_to_laserscan
+    min_range: 0.5
+    max_range: 4.5
+    range_min: 0.5
+    range_max: 4.5
+
+# IMU Configuration (MPU9250 example)
+imu:
+  ros__parameters:
+    frame_id: "imu_link"
+    topic: "/imu/data"
+    linear_acceleration_covariance: [0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01]
+    angular_velocity_covariance: [0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01]
+    orientation_covariance: [0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.01]
+
+# Camera Configuration (optional)
+# RGB Camera Configuration (Logitech C920)
+webcam:
+  ros__parameters:
+    frame_id: "camera_link"
+    topic: "/image_raw"
+    width: 640
+    height: 480
+    framerate: 30.0
+
+# Sensor Fusion Configuration
+sensor_fusion:
+  ros__parameters:
+    use_imu: true
+    use_kinect: true
+    use_webcam: true
+    use_lidar: false
+    fusion_frequency: 30.0

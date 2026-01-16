@@ -12,7 +12,9 @@ OmniBot is a mecanum wheel robot system that supports:
 
 * Omnidirectional mecanum wheel kinematics
 * Multiple low-level motor control backends (STM32, Yahboom)
-* ROS 2–based robot runtime and navigation stack
+* ROS 2–based robot runtime and navigation stack (Jazzy)
+* **Autonomous navigation with SLAM and waypoint following**
+* **Sensors: Xbox Kinect V2 (Depth) + Logitech Webcam (RGB)**
 * **Structured data collection for VLA model fine-tuning**
 * **Standalone VLA inference engine (edge or desktop)**
 * Android tablet/phone app for monitoring, teleoperation, and voice control
@@ -55,6 +57,7 @@ mecanum-vla-robot/
 │   │   ├── omnibot_driver/        # Motor drivers (STM32 / Yahboom)
 │   │   ├── omnibot_control/       # Controllers, planners
 │   │   ├── omnibot_slam/          # SLAM and localization
+│   │   ├── omnibot_navigation/    # Autonomous navigation system
 │   │   ├── omnibot_perception/    # Cameras, depth, sensors
 │   │   ├── omnibot_logging/       # Data hooks → Data Engine
 │   │   └── omnibot_bridge/        # ROS ↔ external interfaces
@@ -105,13 +108,12 @@ mecanum-vla-robot/
 * Custom serial communication protocol
 * Requires firmware flashing
 
-### Yahboom ROS Robot Expansion Board (Recommended)
+### Yahboom ROS Robot Expansion Board (Primary)
 
 * Integrated motor drivers and encoders
 * USB-based communication
 * Simplified command protocol
 * Plug-and-play setup
-* Based on the Yahboom ROS Driver Board
 
 ---
 
@@ -121,14 +123,14 @@ The ROS 2 workspace (`robot_ws/`) is responsible for:
 
 * Low-level motor control
 * Kinematics and motion control
-* Sensor drivers and SLAM
+* Sensor drivers (Kinect V2, Logitech Webcam)
 * Publishing robot state and telemetry
 * Logging synchronized data for learning
 
 ### Supported ROS 2 Distributions
 
-* Humble (recommended)
-* Iron or later (experimental)
+* **Jazzy (Ubuntu 24.04)** - Recommended & Tested
+* Humble (Legacy, may require adjustments)
 
 ---
 
@@ -193,8 +195,8 @@ The Android app provides a human interface for the robot.
 
 ### Prerequisites
 
-* ROS 2 (Humble or later)
-* Python 3.8+
+* ROS 2 Jazzy (Ubuntu 24.04)
+* Python 3.10+
 * `pyserial`
 
 ```bash
@@ -223,6 +225,31 @@ Send velocity commands:
 ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
 "{linear: {x: 0.5}, angular: {z: 0.0}}"
 ```
+
+### Autonomous Navigation (NEW)
+
+1. **Launch autonomous robot with SLAM**:
+   ```bash
+   ros2 launch omnibot_navigation autonomous_robot.launch.py
+   ```
+
+2. **Launch with waypoint navigation**:
+   ```bash
+   ros2 launch omnibot_navigation autonomous_with_waypoints.launch.py
+   ```
+
+3. **Test autonomous operation**:
+   ```bash
+   ros2 run omnibot_navigation test_autonomous.py
+   ```
+
+**Required Hardware for Autonomous Operation:**
+- Xbox Kinect V2 (Depth/Pointcloud)
+- Logitech Webcam (RGB)
+- IMU sensor (e.g., MPU9250)
+- Raspberry Pi 5 8GB
+
+### Using STM32 (Legacy)
 
 ---
 

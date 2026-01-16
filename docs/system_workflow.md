@@ -64,11 +64,11 @@
 |              v                                                                                    |
 |  +-----------+-----------------------------------+                                                 |
 |  |                                               |                                                 |
-|  |  STM32 Microcontroller                        |                                                 |
+|  |  Yahboom ROS Expansion Board                  |                                                 |
 |  |                                               |                                                 |
 |  |  +-------------------+    +----------------+  |                                                 |
 |  |  | Command Parser    |    | Motor Control  |  |                                                 |
-|  |  | <FL,FR,RL,RR>     |--->| PWM Generation |  |                                                 |
+|  |  | (USB Protocol)    |--->| PWM Generation |  |                                                 |
 |  |  +-------------------+    +--------+-------+  |                                                 |
 |  |                                    |          |                                                 |
 |  |                                    v          |                                                 |
@@ -81,7 +81,7 @@
 |  |  +--------+------------------------+         |                                                 |
 |  |  |                                 |         |                                                 |
 |  |  | Status & Odometry Data          |         |                                                 |
-|  |  | Formatting                      |         |                                                 |
+|  |  | UDP/USB Packet                  |         |                                                 |
 |  |  |                                 |         |                                                 |
 |  |  +--------+------------------------+         |                                                 |
 |  |           |                                   |                                                 |
@@ -89,17 +89,17 @@
 |              |                                                                                    |
 +--------------|-------------------------------------------------------------------------------------+
                |
-               | Serial Communication (USB/UART)
+               | USB/Serial Communication
                |
 +--------------|-------------------------------------------------------------------------------------+
-|              v                                                                                    |
+               |              v                                                                                    |
 |  +-----------+-----------------------------------+                                                 |
 |  |                                               |                                                 |
-|  |  ROS2 Environment                             |                                                 |
+|  |  ROS2 Environment (Jazzy)                     |                                                 |
 |  |                                               |                                                 |
 |  |  +-------------------+                        |                                                 |
-|  |  | Serial Data       |                        |                                                 |
-|  |  | Processing        |                        |                                                 |
+|  |  | Yahboom Driver    |                        |                                                 |
+|  |  | Node              |                        |                                                 |
 |  |  +--------+---------+                        |                                                 |
 |  |           |                                   |                                                 |
 |  |           v                                   |                                                 |
@@ -135,58 +135,45 @@
    - For autonomous navigation capabilities
    - Path planning and obstacle avoidance
 
-3. **MecanumController Node**
+3. **MecanumController / Yahboom Driver Node**
    - Subscribes to `/cmd_vel` topic (Twist messages)
-   - Implements mecanum wheel kinematics
-   - Converts velocity commands to individual wheel velocities
-   - Communicates with STM32 via serial port
+   - Implements mecanum wheel kinematics or delegates to board
+   - Communicates with Yahboom Board via USB
    - Publishes odometry data
    - Broadcasts TF transforms
 
-4. **Serial Bridge Node (Alternative Implementation)**
-   - Alternative implementation for serial communication
-   - Formats commands for STM32 microcontroller
-   - Processes feedback from STM32
-
-### STM32 Microcontroller
+### Yahboom ROS Robot Expansion Board
 
 1. **Command Parser**
-   - Parses commands received from Raspberry Pi
-   - Extracts wheel velocity values
+   - Parses USB packet commands from Raspberry Pi
+   - Extracts control values
 
 2. **Motor Control**
-   - Generates PWM signals for motor drivers
+   - Integrated motor drivers handle PWM
    - Controls individual wheel speeds
 
 3. **Encoder Feedback**
-   - Reads encoder values from motors
+   - Reads onboard encoder values
    - Calculates actual wheel speeds
 
 4. **Status & Odometry**
-   - Formats encoder data and status information
-   - Sends data back to Raspberry Pi
+   - Sends formatted data packets back to Raspberry Pi
 
 ### Communication Protocol
 
-1. **Raspberry Pi to STM32**
-   - Format: `<FL,FR,RL,RR>\n`
-   - FL: Front Left wheel velocity
-   - FR: Front Right wheel velocity
-   - RL: Rear Left wheel velocity
-   - RR: Rear Right wheel velocity
+1. **Raspberry Pi to Yahboom Board**
+   - USB Serial / Binary Protocol
 
-2. **STM32 to Raspberry Pi**
-   - Format: `<ENCODERS,FL,FR,RL,RR>\n`
-   - Encoder values for each wheel
-   - Status messages: `<STATUS,...>\n`
+2. **Yahboom Board to Raspberry Pi**
+   - Encoder feedback and IMU data (if applicable)
 
 ## Data Flow
 
 1. **Command Flow**
-   - User/Navigation Stack → `/cmd_vel` → MecanumController → Wheel Velocity Calculation → Serial Communication → STM32 → Motor Control
+   - User/Navigation Stack → `/cmd_vel` → Driver Node → USB Serial → Yahboom Board → Motor Control
 
 2. **Feedback Flow**
-   - Motor Encoders → STM32 → Serial Communication → Raspberry Pi → Odometry Publisher → TF Broadcaster → Navigation Stack/Visualization
+   - Motor Encoders → Yahboom Board → USB Serial → Driver Node → Odometry Publisher → TF Broadcaster → Navigation Stack/Visualization
 
 ## Mecanum Wheel Kinematics
 

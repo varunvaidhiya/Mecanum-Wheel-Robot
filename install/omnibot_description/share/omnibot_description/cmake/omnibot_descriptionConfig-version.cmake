@@ -1,1 +1,0 @@
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_description/ament_cmake_core/omnibot_descriptionConfig-version.cmake

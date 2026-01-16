@@ -1,9 +1,0 @@
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/uninstall.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/omnibot_bringup_uninstall.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/test.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/edit_cache.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/rebuild_cache.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/list_install_components.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/install.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/install/local.dir
-/home/varunvaidhiya/Desktop/Projects/Mecanum-Wheel-Robot/build/omnibot_bringup/CMakeFiles/install/strip.dir

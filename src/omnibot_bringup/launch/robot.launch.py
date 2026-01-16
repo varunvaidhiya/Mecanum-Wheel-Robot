@@ -7,11 +7,11 @@ def generate_launch_description():
     pkg_omnibot_driver = get_package_share_directory('omnibot_driver')
     pkg_omnibot_description = get_package_share_directory('omnibot_description')
 
-    # Start the robot driver node
+    # Start the robot driver node (Yahboom Board)
     start_driver_node = Node(
         package='omnibot_driver',
-        executable='omnibot_driver_node',
-        name='omnibot_driver',
+        executable='yahboom_controller_node.py',
+        name='yahboom_driver',
         output='screen',
         parameters=[{
             'serial_port': '/dev/ttyUSB0',

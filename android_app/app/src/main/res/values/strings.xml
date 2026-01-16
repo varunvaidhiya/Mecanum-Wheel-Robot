@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Robot Control</string>
+    
+    <!-- Navigation -->
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_controls">Controls</string>
+    <string name="title_logs">Logs</string>
+    <string name="title_settings">Settings</string>
+    
+    <!-- Connection -->
+    <string name="connection_status_connected">Connected</string>
+    <string name="connection_status_disconnected">Disconnected</string>
+    <string name="connection_status_connecting">Connecting…</string>
+    <string name="robot_ip_hint">Robot IP Address</string>
+    <string name="reconnect">Reconnect</string>
+    
+    <!-- Controls -->
+    <string name="emergency_stop">EMERGENCY STOP</string>
+    <string name="emergency_stop_confirm">Are you sure you want to activate emergency stop?</string>
+    <string name="mode_teleop">Teleop</string>
+    <string name="mode_autonomous">Autonomous</string>
+    <string name="mode_manual">Manual</string>
+    
+    <!-- Dashboard -->
+    <string name="motor_front_left">FL</string>
+    <string name="motor_front_right">FR</string>
+    <string name="motor_back_left">BL</string>
+    <string name="motor_back_right">BR</string>
+    <string name="velocity_linear_x">Linear X: %.2f m/s</string>
+    <string name="velocity_linear_y">Linear Y: %.2f m/s</string>
+    <string name="velocity_angular">Angular: %.2f rad/s</string>
+    <string name="motor_pwm">PWM: %d</string>
+    <string name="motor_rpm">RPM: %.1f</string>
+    <string name="motor_temp">Temp: %.1f°C</string>
+    
+    <!-- Settings -->
+    <string name="settings_connection">Connection Settings</string>
+    <string name="settings_control">Control Settings</string>
+    <string name="settings_display">Display Settings</string>
+    <string name="max_linear_velocity">Max Linear Velocity</string>
+    <string name="max_angular_velocity">Max Angular Velocity</string>
+    <string name="joystick_sensitivity">Joystick Sensitivity</string>
+</resources>

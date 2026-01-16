@@ -191,16 +191,23 @@ The Android app provides a human interface for the robot.
 
 ---
 
+### User Interfaces
+*   **Xbox Controller**: Teleoperation via `joy_teleop` (See `docs/xbox_setup.md`).
+*   **OpenVLA (AI)**: Natural language control via `omnibot_vla` (See `docs/vla_distributed_setup.md`).
+
+---
+
 ## Installation (Robot Runtime)
 
 ### Prerequisites
 
 * ROS 2 Jazzy (Ubuntu 24.04)
 * Python 3.10+
-* `pyserial`
+* `pyserial`, `joy`, `teleop_twist_joy`
 
 ```bash
 pip install pyserial
+sudo apt install ros-jazzy-joy ros-jazzy-teleop-twist-joy
 ```
 
 ### Build
@@ -213,20 +220,30 @@ source install/setup.bash
 
 ---
 
-## Usage (Yahboom Board)
+## Usage
 
+### 1. Basic Robot (Yahboom Board)
+Launches the motor driver and robot state publisher.
 ```bash
-ros2 launch omnibot_driver yahboom_base_control.launch.py
+ros2 launch omnibot_bringup robot.launch.py
 ```
 
-Send velocity commands:
-
+### 2. Manual Control (Xbox)
 ```bash
-ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
-"{linear: {x: 0.5}, angular: {z: 0.0}}"
+ros2 launch omnibot_bringup joy_teleop.launch.py
 ```
 
-### Autonomous Navigation (NEW)
+### 3. AI Control (OpenVLA)
+Run this on your **Desktop PC**:
+```bash
+ros2 launch omnibot_vla vla_desktop.launch.py
+```
+Then send a prompt:
+```bash
+ros2 topic pub --once /vla/prompt std_msgs/msg/String "data: 'Find the red cup'"
+```
+
+### Autonomous Navigation (SLAM)
 
 1. **Launch autonomous robot with SLAM**:
    ```bash

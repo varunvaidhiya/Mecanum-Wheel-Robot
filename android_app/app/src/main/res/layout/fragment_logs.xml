@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_light"
     android:padding="16dp">
 
     <TextView
@@ -10,8 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="System Logs"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
+        android:textColor="@color/text_primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
         
@@ -19,7 +21,9 @@
         android:id="@+id/switch_logging"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enable CSV Logging"
+        android:text="CSV Logging"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
         app:layout_constraintTop_toTopOf="@id/text_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/text_title"/>
@@ -36,7 +40,9 @@
         android:id="@+id/text_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No logs found"
+        android:text="No log files found"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/recycler_logs"
         app:layout_constraintBottom_toBottomOf="@id/recycler_logs"

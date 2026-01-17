@@ -4,23 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/background_light">
 
     <!-- Top Bar: Connection Status -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_connection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="12dp"
+            android:padding="16dp"
             android:gravity="center_vertical">
 
             <View
@@ -34,17 +35,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="12dp"
                 android:text="Disconnected"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"/>
 
             <TextView
                 android:id="@+id/text_ip_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="IP: --"
-                android:textColor="#757575" />
+                android:textColor="@color/text_secondary" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -53,9 +55,12 @@
         android:id="@+id/card_camera"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/black"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintTop_toBottomOf="@id/card_connection">
 
@@ -66,68 +71,45 @@
             <com.varunvaidhiya.robotcontrol.ui.views.MjpegView
                 android:id="@+id/mjpeg_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#000000" />
+                android:layout_height="match_parent" />
                 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Live Camera Feed"
+                android:text="Live Feed"
                 android:textColor="#FFFFFF"
                 android:background="#80000000"
-                android:padding="4dp"
+                android:padding="6dp"
+                android:textSize="12sp"
                 android:layout_gravity="top|start"
                 android:layout_margin="8dp"/>
         </FrameLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Detailed Metrics Grid -->
+    <!-- Metrics Grid -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_margin="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintTop_toBottomOf="@id/card_camera"
         app:layout_constraintBottom_toBottomOf="parent">
         
-        <!-- Row 1: Velocity & Health -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="@color/card_background"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart_velocity"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
-                
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart_velocity"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="4dp"/>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
-                
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Motor Status\n(Placeholder)"
-                    android:gravity="center"
-                    android:layout_gravity="center"/>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
+                android:layout_margin="12dp"/>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

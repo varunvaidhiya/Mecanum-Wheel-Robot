@@ -8,19 +8,20 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Robot Control Colors -->
-    <color name="primary_blue">#2196F3</color>
-    <color name="secondary_green">#4CAF50</color>
-    <color name="error_red">#F44336</color>
-    <color name="warning_orange">#FF9800</color>
+    <!-- Custom Brand Colors -->
+    <color name="primary_color">#1976D2</color>     <!-- Blue -->
+    <color name="primary_dark">#0D47A1</color>
+    <color name="accent_color">#FF4081</color>      <!-- Pink -->
+    
+    <color name="background_light">#F5F5F5</color>
+    <color name="card_background">#FFFFFF</color>
     
     <!-- Status Colors -->
-    <color name="status_normal">#4CAF50</color>
-    <color name="status_warning">#FF9800</color>
-    <color name="status_critical">#F44336</color>
+    <color name="status_connected">#4CAF50</color>
+    <color name="status_connecting">#FF9800</color>
+    <color name="status_error">#F44336</color>
     
-    <!-- Chart Colors -->
-    <color name="chart_linear_x">#2196F3</color>
-    <color name="chart_linear_y">#4CAF50</color>
-    <color name="chart_angular">#F44336</color>
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
 </resources>

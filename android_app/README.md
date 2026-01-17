@@ -15,6 +15,8 @@ Native Android application for controlling and monitoring the OmniBot mecanum wh
 
 ## Features (To Do)
 - ⏳ Dashboard UI with real-time charts
+- ⏳ Camera Feed Viewer (MJPEG)
+- ⏳ SLAM Map Visualization (OccupancyGrid)
 - ⏳ Virtual joystick control
 - ⏳ Emergency stop button
 - ⏳ Settings screen

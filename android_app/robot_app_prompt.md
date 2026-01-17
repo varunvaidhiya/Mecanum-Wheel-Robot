@@ -230,6 +230,19 @@ data class WheelSpeed(
 - Arrow vectors showing speed direction and magnitude
 - Display RPM or m/s for each wheel
 
+#### Camera Feed Card
+- Video Stream: MJPEG/WebRTC viewer
+- Source: ROS topic `/camera/image_raw/compressed`
+- Overlay: Crosshair or status text
+- Fullscreen mode on tap
+
+#### SLAM Map Viewer
+- Interactive 2D Occupancy Grid map
+- Topic: `/map` (nav_msgs/OccupancyGrid)
+- Robot pose overlay: `/tf` or `/amcl_pose`
+- Zoom and Pan gestures
+- Waypoint setting on long press (optional)
+
 #### System Health Card
 - CPU usage progress bar (if available)
 - Temperature gauge (if available)

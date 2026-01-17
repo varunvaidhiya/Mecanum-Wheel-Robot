@@ -1,0 +1,16 @@
+# Android
+android_app/app/build/
+android_app/build/
+android_app/local.properties
+**/*.apk
+**/*.aab
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+.DS_Store

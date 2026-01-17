@@ -7,39 +7,44 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.varunvaidhiya.robotcontrol.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-/**
- * Main activity - entry point for the Robot Control app
- */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Initialize Timber logging
+        // Initialize Binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        // Set the Toolbar
+        setSupportActionBar(binding.toolbar)
+        
+        // Initialize Logging
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
         
-        // TODO: Set content view and navigation after layouts are created
-        // setContentView(R.layout.activity_main)
-        // setupNavigation()
+        // Setup Navigation
+        val navView: BottomNavigationView = binding.navView
+        val navController = findNavController(R.id.nav_host_fragment)
         
-        Timber.i("MainActivity created")
-    }
-    
-    private fun setupNavigation() {
-        // TODO: Implement navigation setup
-        // val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        // val navController = findNavController(R.id.nav_host_fragment)
-        // val appBarConfiguration = AppBarConfiguration(setOf(
-        //     R.id.navigation_dashboard,
-        //     R.id.navigation_controls,
-        //     R.id.navigation_logs,
-        //     R.id.navigation_settings
-        // ))
-        // setupActionBarWithNavController(navController, appBarConfiguration)
-        // navView.setupWithNavController(navController)
+        val appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.navigation_dashboard,
+            R.id.navigation_slam,
+            R.id.navigation_controls,
+            R.id.navigation_logs,
+            R.id.navigation_settings
+        ))
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+        
+        Timber.i("MainActivity initialized")
     }
 }

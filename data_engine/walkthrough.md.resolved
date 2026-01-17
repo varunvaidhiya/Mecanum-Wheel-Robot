@@ -1,0 +1,51 @@
+# VLA Data Engine Walkthrough
+
+I have implemented a complete end-to-end data engine for your VLA robot training.
+
+## Components Implemented
+
+### 1. Data Schema (HDF5)
+- **Files**: `data_engine/schema/`
+- **Format**: Optimized HDF5 structure with JPEG compression for images.
+- **Features**: variable-length image sequences, synchronized state/action pairs, metadata.
+
+### 2. Ingestion Pipeline
+- **Script**: `data_engine/ingestion/bag_to_hdf5.py`
+- **Usage**:
+  ```bash
+  python data_engine/ingestion/bag_to_hdf5.py --input /path/to/rosbag --output dataset.h5 --fps 10
+  ```
+- **Features**: Pure Python ROS2 bag parsing (no ROS installation needed), automatic topic synchronization.
+
+### 3. Visualization
+- **Script**: `data_engine/visualization/visualize_episode.py`
+- **Usage**:
+  ```bash
+  python data_engine/visualization/visualize_episode.py --path dataset.h5
+  ```
+- **Features**: Interactive replayer with state/action overlays.
+
+### 4. PyTorch Dataloader
+- **File**: `data_engine/loader/dataset.py`
+- **Usage**:
+  ```python
+  from data_engine.loader.dataset import VLADataset
+  dataset = VLADataset('dataset.h5')
+  sample = dataset[0]  # Returns dict with images, state, action
+  ```
+
+## Next Steps
+
+1.  **Install Dependencies**:
+    ```bash
+    pip install -r data_engine/requirements.txt
+    ```
+
+2.  **Verify Setup**:
+    Run the included test script to verify that HDF5 creation works on your system:
+    ```bash
+    python data_engine/tests/test_schema.py
+    ```
+
+3.  **Process Your Data**:
+    Point the ingestion script at your recorded ROS bags to create your first dataset!

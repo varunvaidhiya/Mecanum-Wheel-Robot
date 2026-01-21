@@ -16,6 +16,7 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(serial CONFIG REQUIRED)
 
 
 # Include directories
@@ -31,6 +32,7 @@ ament_target_dependencies(${PROJECT_NAME}
   geometry_msgs
   nav_msgs
   tf2_ros
+  serial
 )
 
 # Install library

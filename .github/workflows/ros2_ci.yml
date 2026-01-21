@@ -38,11 +38,13 @@ jobs:
       - name: Build Workspace
         working-directory: robot_ws
         run: |
+          source /opt/ros/jazzy/setup.bash
           colcon build --symlink-install
 
       - name: Run Tests
         working-directory: robot_ws
         run: |
+          source /opt/ros/jazzy/setup.bash
           colcon test
 
       - name: Verify Test Results

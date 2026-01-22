@@ -16,10 +16,16 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
-# Manual find for serial lib since export is broken in some forks
-find_library(SERIAL_LIB serial REQUIRED)
-find_path(SERIAL_INCLUDE_DIR serial/serial.h REQUIRED)
-include_directories(${SERIAL_INCLUDE_DIR})
+# Robust find for serial library
+find_package(serial QUIET)
+if(NOT serial_FOUND)
+  message(STATUS "Standard find_package(serial) failed, trying manual search...")
+  find_library(SERIAL_LIB NAMES serial libserial PATH_SUFFIXES lib REQUIRED)
+  find_path(SERIAL_INCLUDE_DIR serial/serial.h PATH_SUFFIXES include REQUIRED)
+  include_directories(${SERIAL_INCLUDE_DIR})
+else()
+  set(SERIAL_LIB ${serial_LIBRARIES})
+endif()
 
 
 # Include directories

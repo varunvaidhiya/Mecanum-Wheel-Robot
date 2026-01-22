@@ -22,7 +22,7 @@ jobs:
 
       - name: Checkout serial-ros2
         run: |
-          git clone https://github.com/ostrolucky/serial.git robot_ws/src/serial
+          git clone https://github.com/RoverRobotics-forks/serial-ros2.git robot_ws/src/serial
 
       - name: Install Dependencies
         run: |

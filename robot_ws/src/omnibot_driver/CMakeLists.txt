@@ -16,7 +16,10 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
-find_package(serial REQUIRED)
+# Manual find for serial lib since export is broken in some forks
+find_library(SERIAL_LIB serial REQUIRED)
+find_path(SERIAL_INCLUDE_DIR serial/serial.h REQUIRED)
+include_directories(${SERIAL_INCLUDE_DIR})
 
 
 # Include directories
@@ -32,8 +35,9 @@ ament_target_dependencies(${PROJECT_NAME}
   geometry_msgs
   nav_msgs
   tf2_ros
-  serial
 )
+
+target_link_libraries(${PROJECT_NAME} ${SERIAL_LIB})
 
 # Install library
 install(TARGETS

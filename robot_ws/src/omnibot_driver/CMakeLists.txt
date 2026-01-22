@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 project(omnibot_driver)
 
 # Default to C++14
@@ -16,13 +16,23 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
-# Robust find for serial library
+
+# Try to find serial package, fallback to FetchContent
 find_package(serial QUIET)
 if(NOT serial_FOUND)
-  message(STATUS "Standard find_package(serial) failed, trying manual search...")
-  find_library(SERIAL_LIB NAMES serial libserial PATH_SUFFIXES lib REQUIRED)
-  find_path(SERIAL_INCLUDE_DIR serial/serial.h PATH_SUFFIXES include REQUIRED)
-  include_directories(${SERIAL_INCLUDE_DIR})
+  message(STATUS "serial package not found, using FetchContent...")
+  include(FetchContent)
+  FetchContent_Declare(
+    serial_fetch
+    GIT_REPOSITORY https://github.com/RoverRobotics-forks/serial-ros2.git
+    GIT_TAG master
+  )
+  FetchContent_MakeAvailable(serial_fetch)
+  
+  # serial target is created by add_subdirectory inside MakeAvailable
+  # We need to manually add include dir because serial uses PRIVATE includes
+  include_directories(${serial_fetch_SOURCE_DIR}/include)
+  set(SERIAL_LIB serial)
 else()
   set(SERIAL_LIB ${serial_LIBRARIES})
 endif()

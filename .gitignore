@@ -1,16 +1,21 @@
-# Android
-android_app/app/build/
-android_app/build/
-android_app/local.properties
-**/*.apk
-**/*.aab
-
-# Python
+build/
+install/
+log/
+*.log
 __pycache__/
 *.pyc
-
-# IDEs
-.idea/
 .vscode/
-*.swp
+.idea/
+.DS_Store
+py_install_extracted/
+ROS-robot-expansion-board/
+ROSMASTERX3_Driver/
+robot_ws/yahboom_repo/
+install/
+log/
+*.log
+__pycache__/
+*.pyc
+.vscode/
+.idea/
 .DS_Store

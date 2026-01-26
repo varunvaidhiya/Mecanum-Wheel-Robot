@@ -43,27 +43,27 @@ endif()
 include_directories(include)
 
 # Create library
-add_library(${PROJECT_NAME}
-  src/mecanum_controller.cpp
-)
+# add_library(${PROJECT_NAME}
+#   src/mecanum_controller.cpp
+# )
 
-ament_target_dependencies(${PROJECT_NAME}
-  rclcpp
-  geometry_msgs
-  nav_msgs
-  tf2_ros
-  tf2_geometry_msgs
-)
+# ament_target_dependencies(${PROJECT_NAME}
+#   rclcpp
+#   geometry_msgs
+#   nav_msgs
+#   tf2_ros
+#   tf2_geometry_msgs
+# )
 
-target_link_libraries(${PROJECT_NAME} ${SERIAL_LIB})
+# target_link_libraries(${PROJECT_NAME} ${SERIAL_LIB})
 
 # Install library
-install(TARGETS
-  ${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
+# install(TARGETS
+#   ${PROJECT_NAME}
+#   ARCHIVE DESTINATION lib
+#   LIBRARY DESTINATION lib
+#   RUNTIME DESTINATION bin
+# )
 
 # Install Python scripts
 install(PROGRAMS

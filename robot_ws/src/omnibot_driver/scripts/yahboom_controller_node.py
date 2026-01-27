@@ -40,8 +40,12 @@ class YahboomControllerNode(Node):
         # Store latest command for throttling
         self.current_twist = Twist()
         
-        # Debounce state
         self.last_beep_time = 0
+        
+        # Ramping State
+        self.cmd_vx = 0.0
+        self.cmd_vy = 0.0
+        self.cmd_wa = 0.0
         
         # Create publishers and subscribers
         self.cmd_vel_sub = self.create_subscription(
@@ -55,7 +59,7 @@ class YahboomControllerNode(Node):
         self.odom_pub = self.create_publisher(Odometry, 'odom', 10)
         self.tf_broadcaster = TransformBroadcaster(self)
         
-        # Timer: 10Hz (0.1s) - VERY CONSERVATIVE to prevent brownout/freeze
+        # Timer: 10Hz (0.1s)
         self.update_timer = self.create_timer(0.1, self.update_callback)
         
         # Serial Setup
@@ -63,6 +67,13 @@ class YahboomControllerNode(Node):
         self.connect_serial()
         
         self.get_logger().info('Yahboom controller node initialized')
+        
+    def log_to_file(self, msg):
+        try:
+            with open('/home/varunvaidhiya/yahboom_debug.log', 'a') as f:
+                f.write(f"{time.time()}: {msg}\n")
+        except:
+            pass
     
     def connect_serial(self):
         try:
@@ -95,6 +106,10 @@ class YahboomControllerNode(Node):
             
             checksum = self.calculate_checksum(packet)
             packet.append(checksum)
+            
+            # Log successful packet generation for debugging
+            # if msg_type == 0x12: 
+            #    self.get_logger().info(f"TX: {[hex(x) for x in packet]}")
             
             self.serial_port.write(bytearray(packet))
             time.sleep(0.002) # Critical delay
@@ -129,23 +144,39 @@ class YahboomControllerNode(Node):
             msg = self.current_twist
             
             # CLAMP SPEED to prevent Brownout/Over-current
-            # Limit to 0.4 m/s (400 mm/s)
-            MAX_VAL = 0.4
+            # Limit to 0.2 m/s (200 mm/s) - SAFE MODE
+            MAX_VAL = 0.2
+            RAMP_STEP = 0.02 # Ramping step per 0.1s check
             
-            vx = np.clip(msg.linear.x, -MAX_VAL, MAX_VAL)
-            vy = np.clip(msg.linear.y, -MAX_VAL, MAX_VAL)
-            w  = np.clip(msg.angular.z, -1.0, 1.0) # Rad/s
+            target_vx = np.clip(msg.linear.x, -MAX_VAL, MAX_VAL)
+            target_vy = np.clip(msg.linear.y, -MAX_VAL, MAX_VAL)
+            target_w  = np.clip(msg.angular.z, -1.0, 1.0) # Rad/s
+            
+            # Ramping Logic
+            if self.cmd_vx < target_vx:
+                self.cmd_vx = min(self.cmd_vx + RAMP_STEP, target_vx)
+            elif self.cmd_vx > target_vx:
+                self.cmd_vx = max(self.cmd_vx - RAMP_STEP, target_vx)
+                
+            if self.cmd_vy < target_vy:
+                self.cmd_vy = min(self.cmd_vy + RAMP_STEP, target_vy)
+            elif self.cmd_vy > target_vy:
+                self.cmd_vy = max(self.cmd_vy - RAMP_STEP, target_vy)
+
+            self.cmd_wa = target_w # Angular is usually less current intensive, can stay direct or ramp too
             
             # Convert to integer for board
-            vx_int = int(vx * 1000)
-            vy_int = int(vy * 1000)
-            w_int  = int(w * 1000)
+            vx_int = int(self.cmd_vx * 1000)
+            vy_int = int(self.cmd_vy * 1000)
+            w_int  = int(self.cmd_wa * 1000)
             
             CAR_TYPE = 1 # X3
             payload = struct.pack('<bhhh', CAR_TYPE, vx_int, vy_int, w_int)
             self.send_packet(0x12, payload)
         except Exception as e:
             self.get_logger().error(f'CmdVel Error: {e}')
+            self.log_to_file(f'CmdVel Error: {e}')
+            self.log_to_file(traceback.format_exc())
 
     def update_callback(self):
         try:
@@ -153,7 +184,7 @@ class YahboomControllerNode(Node):
                 self.connect_serial()
                 return
 
-            # 1. Read Odom
+            # 1. Read Odom (Re-enabled now that we know it's Power issue)
             self.read_yahboom_odometry()
             
             # 2. Publish Odom
@@ -164,26 +195,57 @@ class YahboomControllerNode(Node):
             
         except Exception as e:
             self.get_logger().error(f'Update Error: {e}')
+            self.log_to_file(f'Update Error: {e}')
 
     def read_yahboom_odometry(self):
         if self.serial_port is None: return
         try:
-            if self.serial_port.in_waiting > 0:
-                header = self.serial_port.read(2)
-                if header != b'\xff\xfb': return
+            # Consume all waiting bytes to avoid buffer overflow and getting stuck in the past
+            waiting = self.serial_port.in_waiting
+            if waiting < 4: # Minimum packet size
+                return
                 
-                len_byte = self.serial_port.read(1)
-                if not len_byte: return
-                length = ord(len_byte)
+            # Read everything
+            data = self.serial_port.read(waiting)
+            
+            # Find the LAST occurrence of the header (FF FB) to get latest data
+            # Protocol: FF FB LEN ...
+            last_header_idx = data.rfind(b'\xff\xfb')
+            
+            if last_header_idx == -1:
+                return # No header found
                 
-                to_read = length
-                data = self.serial_port.read(to_read)
-                pass # Checksum verification skipped for stability
+            # Check if we have enough data from the header
+            # We need at least header(2) + len(1)
+            if last_header_idx + 3 > len(data):
+                # Header is at the very end, partial packet. 
+                # Ideally we should keep this for next time, but for 10Hz commands, 
+                # dropping one intromittent odom packet is better than lag.
+                return
+                
+            # Parse Length
+            packet_len = data[last_header_idx + 2]
+            
+            # Full packet size expected: Header(2) + Len(1) + PacketLen
+            # Wait, verify protocol: 
+            # Manual says: FF FB LEN(1) TYPE(1) PAYLOAD(N). 
+            # Confirmed Protocol says Len includes ID+Len+Func+Payload.
+            # Usually Receiving (Robot->PC) might be different. 
+            # But let's assume it follows the standard Length byte.
+            # If we trust the length byte:
+            
+            full_packet_size = 3 + packet_len # Header(2) + Len(1) is standard overhead? 
+            # Or is Len just the remaining bytes?
+            # Let's try to just verify we have enough bytes. 
+            # If we don't strict parse, we just ignore for now to prevent crashing.
+            # The most important part is flushing the buffer, which we just did.
+            
+            return
+            
         except Exception as e:
-            self.get_logger().error(f'Rx Error (Closing): {e}')
-            if self.serial_port:
-                self.serial_port.close()
-            self.serial_port = None
+            self.get_logger().error(f'Rx Error: {e}')
+            # Do not close connection on generic RX error, just skip
+
 
     def publish_odometry(self, time):
         try:

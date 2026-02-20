@@ -85,6 +85,13 @@ class YahboomControllerNode(Node):
                 baudrate=self.baud_rate,
                 timeout=1.0)
             self.get_logger().info(f'Connected to {self.port_name}')
+            
+            # Initialize CAR_TYPE = 1 (Mecanum X3) - must be set each session
+            time.sleep(0.3)
+            for _ in range(5):
+                self.send_packet(0x15, struct.pack('<b', 1))
+                time.sleep(0.05)
+            self.get_logger().info('CAR_TYPE set to 1 (Mecanum X3)')
         except Exception as e:
             self.get_logger().error(f'Serial Connection Error: {e}')
             self.serial_port = None
@@ -143,14 +150,13 @@ class YahboomControllerNode(Node):
         try:
             msg = self.current_twist
             
-            # CLAMP SPEED to prevent Brownout/Over-current
-            # Limit to 0.2 m/s (200 mm/s) - SAFE MODE
-            MAX_VAL = 0.2
-            RAMP_STEP = 0.02 # Ramping step per 0.1s check
+            # CLAMP SPEED to prevent Brownout/Over-current - SAFE MODE
+            MAX_VAL = 0.2  # m/s
+            RAMP_STEP = 0.02  # m/s per 0.1s tick
             
             target_vx = np.clip(msg.linear.x, -MAX_VAL, MAX_VAL)
             target_vy = np.clip(msg.linear.y, -MAX_VAL, MAX_VAL)
-            target_w  = np.clip(msg.angular.z, -1.0, 1.0) # Rad/s
+            target_w  = np.clip(msg.angular.z, -1.0, 1.0)
             
             # Ramping Logic
             if self.cmd_vx < target_vx:
@@ -163,16 +169,18 @@ class YahboomControllerNode(Node):
             elif self.cmd_vy > target_vy:
                 self.cmd_vy = max(self.cmd_vy - RAMP_STEP, target_vy)
 
-            self.cmd_wa = target_w # Angular is usually less current intensive, can stay direct or ramp too
+            self.cmd_wa = target_w
             
-            # Convert to integer for board
-            vx_int = int(self.cmd_vx * 1000)
+            # Send onboard Mecanum kinematics command (0x12)
+            # Board computes wheel speeds internally using CAR_TYPE=1 algorithm
+            vx_int = int(self.cmd_vx * 1000)  # mm/s
             vy_int = int(self.cmd_vy * 1000)
             w_int  = int(self.cmd_wa * 1000)
             
-            CAR_TYPE = 1 # X3
+            CAR_TYPE = 1  # Mecanum X3
             payload = struct.pack('<bhhh', CAR_TYPE, vx_int, vy_int, w_int)
             self.send_packet(0x12, payload)
+            
         except Exception as e:
             self.get_logger().error(f'CmdVel Error: {e}')
             self.log_to_file(f'CmdVel Error: {e}')
@@ -184,8 +192,8 @@ class YahboomControllerNode(Node):
                 self.connect_serial()
                 return
 
-            # 1. Read Odom (Re-enabled now that we know it's Power issue)
-            self.read_yahboom_odometry()
+            # 1. Read Odom (Disabled to filter RX Noise)
+            # self.read_yahboom_odometry()
             
             # 2. Publish Odom
             self.publish_odometry(self.get_clock().now())
